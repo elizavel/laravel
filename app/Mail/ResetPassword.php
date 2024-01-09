@@ -12,13 +12,14 @@ use Illuminate\Queue\SerializesModels;
 class ResetPassword extends Mailable
 {
     use Queueable, SerializesModels;
-    var $temporaryPassword = null;
+    var $temporaryPassword = null,$link = null;
     /**
      * Create a new message instance.
      */
-    public function __construct($temporaryPassword)
+    public function __construct($temporaryPassword,$link)
     {
         $this->temporaryPassword = $temporaryPassword;
+        $this->link = $link;
     }
 
     /**
@@ -39,7 +40,8 @@ class ResetPassword extends Mailable
         return new Content(
             view: 'Auth.resetpassword',
             with: [
-                'password' => $this->temporaryPassword
+                'password' => $this->temporaryPassword,
+                'link'=>$this->link
             ]
         );
     }

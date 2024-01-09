@@ -110,17 +110,29 @@ class AccountController extends Controller
                 $randomPassword = rand();
                 $temporaryPassword = $this->hashingPassword($randomPassword);
 
-                $dataToUpdate = array(
-                    'password'=>$temporaryPassword
+               
+
+                $rawToken = array( 
+                    'email'=>$request->input('email'),
+                    'exp'=>$this->tokenExpiration()
                 );
-                $userModel->updateViaEmail($request->input('email'),$dataToUpdate); 
-                
-                Mail::to($request->input('email'))->send(new ResetPassword($randomPassword));
+                $rawToken = json_encode($rawToken); 
+                $tokenPassword = Crypt::encryptString($rawToken); 
+
+                $dataToUpdate = array(
+                    'password'=>$temporaryPassword,
+                    'reset_token'=>$tokenPassword
+                );
+                $userModel->updateViaEmail($request->input('email'),$dataToUpdate);  
+
+                $link = env("APP_URL")."resetting-password/?token={$tokenPassword}";
+                Mail::to($request->input('email'))->send(new ResetPassword($randomPassword,$link));
                
                 $data = array(
                     'status'=>0, 
                     'data'=>array( 
-                        'message' => "Reset Password link has been sent to {$request->input('email')}"
+                        'message' => "Reset Password link has been sent to {$request->input('email')}",
+                        'link'=>$link
                     )
                 );
                 return response($data,200);

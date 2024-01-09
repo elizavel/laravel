@@ -2,6 +2,8 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\LoggingRequests;
+use App\Http\Middleware\TokenValidation;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -64,5 +66,7 @@ class Kernel extends HttpKernel
         'signed' => \App\Http\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'log.requests'=> LoggingRequests::class,
+        'token.validation' => TokenValidation::class
     ];
 }

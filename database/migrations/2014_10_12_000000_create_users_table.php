@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('password_renew_date');
             $table->integer('pin')->nullable(true);
+            $table->text('token')->nullable(true);
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

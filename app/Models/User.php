@@ -21,8 +21,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'password_renew_date',
+        'pin'
     ];
-
+ 
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -31,6 +33,8 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'token',
+        'pin'
     ];
 
     /**
@@ -41,5 +45,25 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
-    ];
+    ]; 
+
+    public function existingUserEmailToken($id,$email,$token){
+        $result = $this->where('id',$id)->where('email',$email)->where('token',$token)->get();
+        if(count($result)){  
+            return true;
+        }
+        return false;
+    }
+
+    public function validateEmail($email){
+        $result = $this->where('email',$email)->get();
+        if(count($result)){  
+            return true;
+        }
+        return false;
+    }
+
+    public function updateViaEmail($email,$data){
+        $this::where('email',$email)->update($data);
+    }
 }

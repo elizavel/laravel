@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Validator;
 class AccountController extends Controller
 {    
     const URI_DASHBOARD = '/dashboard';
+    
     public function signUp(Request $request){
 
         $validator = Validator::make($request->all(), [
@@ -74,7 +75,8 @@ class AccountController extends Controller
                     'status'=>0, 
                     'data'=>array(
                         'token' => $token,
-                        'user'=> $request->user()
+                        'user'=> $request->user(),
+                        'exp'=>$this->tokenExpiration()
                     )
                 );
                 return response($data,200);

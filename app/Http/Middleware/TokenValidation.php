@@ -21,7 +21,11 @@ class TokenValidation
         $decryptedToken = Crypt::decryptString($encryptedToken);
         $decodedUser = json_decode($decryptedToken); 
         $userModel = new User();
-        $valid = $userModel->existingUserEmailToken($decodedUser->id,$decodedUser->email,$encryptedToken);
+        $exists = $userModel->existingUserEmailToken($decodedUser->id,$decodedUser->email,$encryptedToken);
+        $valid = false;
+        if($exists && $decodedUser->exp > date('Y-m-d H:i:s')){ 
+            $valid = true; 
+        }
         if($valid){ 
             return $next($request);
         } 
